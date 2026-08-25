@@ -4,8 +4,8 @@
   "description": "Documentation for building virtual reality rigs & all software related tools at BolkanLab",
   "main": "index.js",
   "authors": {
-    "name": "Juan Lopez Luna",
-    "email": "juanlopez@princeton.edu"
+    "name": "Alvaro Luna Sanchez",
+    "email": "alvalunasan@gmail.edu"
   },
   "repository": "/BolkanLab-documentation",
   "scripts": {
