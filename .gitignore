@@ -1,0 +1,17 @@
+pids
+logs
+node_modules
+npm-debug.log
+coverage/
+run
+.DS_Store
+.nyc_output
+.basement
+config.local.js
+basement_dist
+.vuepress/.cache
+.vuepress/.temp
+.vuepress/dist
+# Rule to prevent non-standard lock files
+yarn*.lock
+!yarn.lock

@@ -1,0 +1,18 @@
+<!--
+  PLACEHOLDER LOGO.
+
+  Replace this file with the real Bolkan Lab logo, then update `heroImage`
+  in /index.md to point at the new filename, e.g.:
+
+      heroImage: ./images/bolkanlab-logo.png
+
+  Files in .vuepress/public/ are copied to the site root, so a file at
+  .vuepress/public/images/foo.png is referenced as ./images/foo.png
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 300" width="600" height="300" role="img" aria-label="Bolkan Lab">
+  <title>Bolkan Lab</title>
+  <g font-family="Helvetica, Arial, sans-serif" font-weight="700">
+    <text x="300" y="140" font-size="110" text-anchor="middle" fill="#fcd34d">Bolkan</text>
+    <text x="300" y="250" font-size="110" text-anchor="middle" fill="#111111">Lab</text>
+  </g>
+</svg>

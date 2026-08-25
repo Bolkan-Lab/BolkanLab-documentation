@@ -1,0 +1,29 @@
+# Ignore runtime and log files
+pids
+logs
+npm-debug.log
+
+# Ignore Node.js modules
+node_modules
+
+# Ignore test coverage and other temporary data
+coverage/
+run
+.nyc_output
+.basement
+basement_dist
+
+# Ignore system-specific files
+.DS_Store
+
+# Ignore VuePress temporary files
+.vuepress/.cache
+.vuepress/.temp
+.vuepress/dist
+
+# Ignore configuration files specific to local development
+config.local.js
+
+# Ignore non-standard lock files
+yarn*.lock
+!yarn.lock

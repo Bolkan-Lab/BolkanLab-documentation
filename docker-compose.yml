@@ -1,0 +1,13 @@
+services:
+  vuepress:
+    build:
+      context: . # The directory containing your Dockerfile
+      dockerfile: Dockerfile # Explicitly specify the Dockerfile
+    ports:
+      - "8080:8080" # Map port 8080 on the host to 8080 in the container
+    volumes:
+      - .:/app # Mount the current directory to /app in the container
+      - /app/node_modules # Exclude node_modules from the host to avoid conflicts
+    environment:
+      - NODE_ENV=development # Set the environment variable
+    command: yarn dev # Run the development server when the container starts

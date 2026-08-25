@@ -1,0 +1,41 @@
+name: Build and Deploy
+
+on:
+  push:
+    branches:
+      - master
+  workflow_dispatch:
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@master
+      with:
+        fetch-depth: 0
+
+    - name: Setup Node.js
+      uses: actions/setup-node@master
+      with:
+        node-version: 22
+
+    - name: Install Dependencies
+      run: yarn
+
+    - name: Build VuePress
+      run: yarn build
+
+    - name: Deploy to GitHub Pages
+      uses: crazy-max/ghaction-github-pages@v5
+      with:
+        target_branch: gh-pages
+        build_dir: .vuepress/dist
+        # TODO: set this to the repository that serves the site, e.g.
+        #   BolkanLab/bolkanlab.github.io   (a separate Pages repo), or
+        #   delete this line entirely to publish to the gh-pages branch of THIS repo.
+        repo: ORG/REPO
+      env:
+        # Personal access token with `repo` scope on the target repository.
+        # Add it under Settings > Secrets and variables > Actions > New repository secret.
+        GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
