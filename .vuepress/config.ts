@@ -185,7 +185,7 @@ function getSoftwareSidebar() {
       link: '/software/',
       collapsible: true,
       children: [
-        '/software/example-tool.md',      // Maps to `software/example-tool.md`
+        '/software/virmen_guide.md',              // Maps to `software/virmen_guide.md`
       ],
     },
   ];

@@ -160,7 +160,6 @@ This guide walks the researcher through every step, along with tips and tricks, 
  </figure>
 
 
-
 ### Set up training
 
  1. Make sure you have all the files described in the section above.
