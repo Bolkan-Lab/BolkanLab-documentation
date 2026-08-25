@@ -6,7 +6,19 @@ import { searchPlugin } from '@vuepress/plugin-search';
 
 const siteDescription = typeof description === 'string' ? description : 'Default site description';
 
+/**
+ * Base public path.
+ *
+ * GitHub Pages serves this project site from a subdirectory named after the
+ * repository, so every asset and link has to be prefixed with it. If the site
+ * is ever moved to a `<owner>.github.io` repo or a custom domain, set
+ * `VUEPRESS_BASE=/` instead of editing this file.
+ */
+const base = (process.env.VUEPRESS_BASE ?? '/BolkanLab-documentation/') as `/${string}/`;
+
 export default defineUserConfig({
+  base,
+
   /**
    * Site Title
    * Ref: https://v2.vuepress.vuejs.org/reference/config.html#title

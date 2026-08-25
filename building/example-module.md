@@ -68,11 +68,13 @@ CAD files, GERBERs and STEP archives go in `building/assets/drawings/` or
 `.vuepress/config.ts` handles `.pdf`, `.zip`, `.ait`, `.log`, `.txt` and `.stp`.
 
 For a file that must download rather than open in the browser, put a copy in
-`.vuepress/public/` and use a plain HTML anchor with the `download` attribute —
-paths under `public/` are served from the site root:
+`.vuepress/public/` and use an HTML anchor with the `download` attribute. Files
+under `public/` are served from the site root, but the published site lives in a
+subdirectory, so wrap the path in `$withBase` instead of hardcoding a leading
+slash — otherwise the link 404s on the deployed site while working locally:
 
 ```html
-<a href='/building/drawings/my-rig.step.zip' download>Download the STEP files</a>
+<a :href="$withBase('/building/drawings/my-rig.step.zip')" download>Download the STEP files</a>
 ```
 
 ## Tables

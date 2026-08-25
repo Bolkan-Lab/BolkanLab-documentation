@@ -13,6 +13,7 @@ Documentation for building virtual reality rigs & all software related tools at 
    - [c) Adding Images and Downloadable Files](#c-adding-images-and-downloadable-files)
 4. [Deployment](#deployment)
 5. [Setup Checklist](#setup-checklist)
+6. [First-time Deploy](#first-time-deploy)
 
 ---
 
@@ -105,9 +106,9 @@ Each section contains an **example page** (`example-module.md` / `example-tool.m
     <center><figcaption><small>Caption</small></figcaption></center>
   </figure>
   ```
-- **Files that should download** (CAD, GERBER, STEP, PDF) go in `.vuepress/public/` and are linked from the site root:
+- **Files that should download** (CAD, GERBER, STEP, PDF) go in `.vuepress/public/` and are linked from the site root. The published site lives in a subdirectory, so wrap the path in `$withBase` — a hardcoded leading slash works locally but 404s once deployed:
   ```html
-  <a href='/building/drawings/my-rig.step.zip' download>Download</a>
+  <a :href="$withBase('/building/drawings/my-rig.step.zip')" download>Download</a>
   ```
   The `file-loader` rule in `.vuepress/config.ts` covers `.pdf`, `.zip`, `.ait`, `.log`, `.txt` and `.stp`. Add other extensions to that rule's `test` regex if needed.
 
@@ -115,7 +116,7 @@ Each section contains an **example page** (`example-module.md` / `example-tool.m
 
 ## **Deployment**
 
-Pushing to `master` triggers `.github/workflows/vuepress-deploy.yml`, which builds the site and pushes `.vuepress/dist` to a `gh-pages` branch.
+The site is published to **GitHub Pages** by `.github/workflows/deploy.yml`.
 
 ```bash
 git add .
@@ -123,16 +124,51 @@ git commit -m "Update documentation"
 git push
 ```
 
+Pushing to `master` (or `main`) builds the site and deploys `.vuepress/dist` straight to Pages using the built-in `GITHUB_TOKEN` — there is no `gh-pages` branch and no personal access token to manage. Progress is visible under the repository's **Actions** tab, and the live URL is shown on the **github-pages** environment. A first deploy usually takes a couple of minutes.
+
+Pull requests run the same build as a check but never publish, so a broken build is caught before it reaches the site.
+
+### Where the site lives
+
+GitHub serves a project site from a subdirectory named after the repository, so `base` in `.vuepress/config.ts` is set to `/BolkanLab-documentation/` and the site is available at:
+
+```
+https://<owner>.github.io/BolkanLab-documentation/
+```
+
+If the site later moves to a `<owner>.github.io` repository or a custom domain, the path prefix disappears — set the `VUEPRESS_BASE` environment variable to `/` in the workflow's build step rather than editing `config.ts`.
+
 ---
 
 ## **Setup Checklist**
 
 This repository was scaffolded from the BRAIN CoGS mini VR rigs documentation. Before the first deploy:
 
+- [ ] **Create the GitHub repository** and push this code (see *First-time deploy* below).
+- [ ] **Enable Pages** — *Settings → Pages → Build and deployment → Source: **GitHub Actions***. Without this the deploy job fails.
+- [ ] **Repository name** — if the repository is not named `BolkanLab-documentation`, update `base` in `.vuepress/config.ts` to match, or the deployed CSS, JS and images will 404.
 - [ ] **Logo** — replace `.vuepress/public/images/bolkanlab-logo.svg` with the real Bolkan Lab logo and update `heroImage` in `index.md` to match the new filename.
-- [ ] **Deploy target** — in `.github/workflows/vuepress-deploy.yml`, set `repo:` to the repository that serves the site, or delete that line to publish to this repo's own `gh-pages` branch.
-- [ ] **Deploy secret** — add an `ACCESS_TOKEN` repository secret (a personal access token with `repo` scope on the target repository) under *Settings → Secrets and variables → Actions*.
 - [ ] **Author** — update the `authors` field in `package.json`.
 - [ ] **Contact** — add a contact email to `building/index.md`.
 - [ ] **Accent color** — `.vuepress/styles/palette.styl` uses a darkened gold so link text meets contrast requirements; switch it to the pure brand yellow `#fcd34d` if preferred (see the comment in that file).
 - [ ] **Example pages** — delete `example-module.md` / `example-tool.md` once real pages exist, and remove them from the sidebars.
+
+---
+
+## **First-time deploy**
+
+1. Create an empty repository on GitHub named **`BolkanLab-documentation`** — no README, no `.gitignore`, no license, so the first push is not rejected.
+
+2. Point this checkout at it and push:
+   ```bash
+   git remote add origin https://github.com/<owner>/BolkanLab-documentation.git
+   git push -u origin master
+   ```
+
+3. In the new repository, go to **Settings → Pages** and set *Build and deployment → Source* to **GitHub Actions**.
+
+4. Open the **Actions** tab. The push already started a *Deploy documentation site* run; if it failed because Pages was not enabled yet, re-run it from that page.
+
+5. When the run finishes, the site is live at `https://<owner>.github.io/BolkanLab-documentation/`. The URL is also linked from the **github-pages** entry under the repository's *Environments*.
+
+Every later push to `master` redeploys automatically.

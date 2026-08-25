@@ -1,11 +1,11 @@
 ---
 home: true
-heroImage: ./images/bolkanlab-logo.svg
+heroImage: /images/bolkanlab-logo.svg
 tagline: Documentation for building virtual reality rigs & all software related tools at BolkanLab
 actionText: Quick start
 actions:
   - text: Quick start
-    link: building/
+    link: /building/
     type: primary
 features:
 - title: Build a VR rig
