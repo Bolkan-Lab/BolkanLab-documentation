@@ -22,6 +22,12 @@ jobs:
   build:
     name: Build
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      # actions/configure-pages reads the repository's Pages settings to work
+      # out the site URL, so the build job needs this even though only the
+      # deploy job publishes.
+      pages: read
     steps:
       - name: Checkout
         uses: actions/checkout@v4
