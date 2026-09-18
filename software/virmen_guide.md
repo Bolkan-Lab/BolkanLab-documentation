@@ -334,7 +334,6 @@ This guide walks you through every step of training subjects in the ViRMEn/DataJ
 ### Make the code simulation-ready
 
 + It is useful to make the experiment code simulation-ready, so you can test every change without touching the rig hardware.
-+ Simulation-ready code can also be used to make trial-by-trial videos with the <a href="https://github.com/BrainCOGS/ReproduceTrialTowers">ReproduceTrialTowers repository</a>.
  1. Find every line in the experiment code that talks to the hardware: all lines starting with **nidaq** and the **updateDAQSyncSignals** function.
  2. Wrap those lines in an ```if RigParameters.hasDAQ ... end``` block.
 
