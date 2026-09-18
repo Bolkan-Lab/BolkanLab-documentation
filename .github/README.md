@@ -142,7 +142,7 @@ If the site later moves to a `<owner>.github.io` repository or a custom domain, 
 
 ## **Setup Checklist**
 
-This repository was scaffolded from the BRAIN CoGS mini VR rigs documentation. Before the first deploy:
+This repository was scaffolded from the BolkanLab mini VR rigs documentation. Before the first deploy:
 
 - [ ] **Create the GitHub repository** and push this code (see *First-time deploy* below).
 - [ ] **Enable Pages** — *Settings → Pages → Build and deployment → Source: **GitHub Actions***. Without this the deploy job fails.

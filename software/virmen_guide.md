@@ -5,25 +5,52 @@ lang: en-US
 
 # {{ $frontmatter.title }}
 
-This guide walks the researcher through every step, along with tips and tricks, for training in the ViRMEn/Datajoint environment.
+This guide walks you through every step of training subjects in the ViRMEn/DataJoint environment, along with tips and tricks along the way.
 
-## New task Creation
+
+## Excel Subject Registry
+
++ Before you can use ViRMEn, you need to register the subjects you are going to train.
++ Register them in the <a href="https://iowa-my.sharepoint.com/:x:/r/personal/jmunozdelangel_uiowa_edu/_layouts/15/Doc.aspx?sourcedoc=%7B3C3EFF12-0DD5-4FA0-B2CB-1104808CD318%7D&file=ViRMEn_Infrastructure_Data.xlsm&action=default&mobileredirect=true">Excel Subject Registry</a>.
+
+ <figure>
+  <img src='./assets/images/virmen_guide/UserRegistry.png'>
+  <center><figcaption>User Registry</figcaption></center>
+ </figure>
+
+ <figure>
+  <img src='./assets/images/virmen_guide/SubjectRegistry.png'>
+  <center><figcaption>Subject Registry</figcaption></center>
+ </figure>
+
++ **First time only:** go to the **ViRMENUsers** sheet and add your **hawkid** and a **user_id_abv**.
+  The **user_id_abv** is used to name all of your subjects, in the format `"user_id_abv"_"subject_name"` (e.g. `aluna_T01`). You can reuse your hawkid as your user_id_abv, but if it is long, a shorter abbreviation is recommended.
++ To add a subject, go to the **VirmenSubjects** sheet and:
+  1. Select your **user_id** in column A.
+  2. Type the **subject_name** in column B. The **subject_fullname** in column C is filled in automatically.
+  3. Select the subject's **status** in column D: `Newborn`, `InExperiments` or `Dead`. (In the future, only `InExperiments` subjects will be shown in the ViRMEn GUI, and `Dead` subjects will be moved automatically to the **PastSubjects** sheet.)
+  4. Click the **Save New Subjects** button.
++ The subject will be available to select in the training GUI the next time you start ViRMEn.
+
+
+## New task creation
+
 
 ### Prerequisites
 
-+ Read the ViRMEn Manual. Access it from the ViRMEn repository (log in to GitHub first): <a href="https://github.com/BrainCOGS/ViRMEn/blob/master/ViRMEn%20manual.pdf">ViRMEn Manual Link</a>
-+ Each task is made up of a group of files (2 `.mat` files and 4 `.m` functions) that make everything work. All of them are described below.
++ Read the ViRMEn Manual, available in the ViRMEn repository (log in to GitHub first): <a href="https://github.com/Bolkan-Lab/ViRMEn/blob/main/ViRMEn%20manual.pdf">ViRMEn Manual</a>.
++ Each task is made up of six files (two `.mat` files and four `.m` functions) that work together. Each one is described below.
 
 ### Experiment code file
 + Located in the **ViRMEn\experiments** directory.
-+ Controls stimulus presentation and trial/block progression. This code runs every frame; its general structure is a state machine that follows the trial schema.
++ Controls stimulus presentation and trial/block progression. This code runs on every frame and is structured as a state machine that follows the trial schema.
 + For a detailed guide on how to modify it, see the ViRMEn Manual.
 + Original file: ```C:\Experiments\ViRMEn\experiments\poisson_blocks.m```
 + Most common use:
- 1. Copy the existing experiment code file from the most similar task.
- 2. Rename the file to a descriptive name (e.g. **"TaskName"_ExperimentCode.mat**).
+ 1. Copy the experiment code file from the most similar existing task.
+ 2. Give the copy a descriptive name (e.g. **"TaskName"_ExperimentCode.m**).
  3. Change the experiment code logic.
- 4. See  <a href="https://braincogs.github.io/software/virmen_guide.html#tips-and-tricks-experiment-code"> Tips and Tricks Experiment Code </a> below for detailed tips.
+ 4. See [Tips and Tricks Experiment Code](#tips-and-tricks-experiment-code) below for detailed tips.
 
  <figure>
   <img src='./assets/images/virmen_guide/experiment_code.png'>
@@ -36,142 +63,147 @@ This guide walks the researcher through every step, along with tips and tricks, 
 + For a detailed guide on how to modify it, see the ViRMEn Manual.
 + Original file: ```C:\Experiments\ViRMEn\experiments\poisson_blocks.mat```
 + Most common use:
- 1. Copy the existing world file from the most similar task.
- 2. Rename the file to a descriptive name (e.g. **"TaskName"_World.mat**).
- 3. Run ```virmen``` in MATLAB and open the world (Experiment -> Open).
- 4. If no object is going to change, just set the **Experiment code** dropdown (bottom-left corner) to match your experiment code filename.
+ 1. Copy the world file from the most similar existing task.
+ 2. Give the copy a descriptive name (e.g. **"TaskName"_World.mat**).
+ 3. Run ```virmen``` in MATLAB and open the world (**Experiment → Open**).
+ 4. If you don't need to change any objects, just set the **Experiment code** dropdown (bottom-left corner) to your experiment code filename.
 
  <figure>
   <img src='./assets/images/virmen_guide/virmen_gui.png'>
-  <center><figcaption>ViRMEn GUI: to modify world files</figcaption></center>
+  <center><figcaption>ViRMEn GUI, used to modify world files</figcaption></center>
  </figure>
 
 ### Protocol file
 + Located in the **ViRMEn\experiments\protocols** directory.
-+ Declares the number of levels, maze settings, and the criteria that decide when to advance a subject to the next level.
++ Declares the number of levels, the maze settings, and the criteria that decide when a subject advances to the next level.
 + Original file: ```C:\Experiments\ViRMEn\experiments\protocols\PoissonBlocksCondensed3m.m```
 
  <figure>
   <img src='./assets/images/virmen_guide/protocol_code.png'>
-  <center><figcaption>Protocol file Code</figcaption></center>
+  <center><figcaption>Protocol file code</figcaption></center>
  </figure>
 
 + The structures and variables in the protocol file are defined below.
  1. Maze structure:
 
- | Parameter name   | Definition                                                                                                                             | Values accepted                                                                                              |
- |------------------|----------------------------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------|
- | lStart           | Length of start region on track                                                                                                        | Real number (>0)                                                                                             |
- | lCue             | Length of cue region on track                                                                                                          | Real Number (>0)                                                                                             |
- | lMemory          | Length of delay region on track                                                                                                        | Real Number (>0)                                                                                             |
- | Tri_turnHint     | Are the turn hints present at all?                                                                                                     | logical                                                                                                      |
- | Tri_turnHint_Mem | Are turn hints present during delay period?                                                                                            | logical                                                                                                      |
- | cueDuration      | How long are towers present after they appear (i.e., do they disappear after they are passed, and if yes, after how much time)?        | Real Number (>0, in seconds)                                                                                 |
- | cueVisibleAt     | How far away from the navigator are towers visible?                                                                                    | Real Number (>0)                                                                                             |
- | cueProbability   | Probability parameter that defines the ratio of salient vs. distractor towers                                                          | Real Number (>0, lower numbers make the ratio smaller on average) or inf (places all towers on correct side) |
- | cueDensityPerM   | How many towers per meter in cue region are possible?                                                                                  | Real number                                                                                                  |
- | antiFraction     | Proportion of trials in which the correct choice is away from the side with more towers (i.e., fraction of trials with inverted reward | Real number ([0-1])                                                                                          |
- | world            | Index of Virmen world in vr.worlds for that Maze                                                                                       | Index of virmen world ([1-N], where N is the max number of worlds)                                           |
+ | Parameter name   | Definition | Values accepted |
+ |------------------|------------|-----------------|
+ | lStart           | Length of the start region of the track | Real number (>0) |
+ | lCue             | Length of the cue region of the track | Real number (>0) |
+ | lMemory          | Length of the delay region of the track | Real number (>0) |
+ | Tri_turnHint     | Whether turn hints are present at all | Logical |
+ | Tri_turnHint_Mem | Whether turn hints are present during the delay period | Logical |
+ | cueDuration      | How long towers remain visible after they appear (i.e., whether they disappear after being passed, and if so, after how long) | Real number (>0, in seconds) |
+ | cueVisibleAt     | How far from the navigator towers become visible | Real number (>0) |
+ | cueProbability   | Probability parameter that sets the ratio of salient to distractor towers | Real number (>0; lower values make the ratio smaller on average) or `inf` (places all towers on the correct side) |
+ | cueDensityPerM   | Maximum number of towers per meter in the cue region | Real number |
+ | antiFraction     | Proportion of trials in which the correct choice is on the side with fewer towers (i.e., the fraction of trials with inverted reward) | Real number ([0-1]) |
+ | world            | Index of the ViRMEn world in `vr.worlds` used by this maze | Index of a ViRMEn world ([1-N], where N is the number of worlds) |
 
  2. Maze advancement criteria structure:
 
- | Parameter name   | Definition                                                                                                                         | Values accepted                                                    |
- |------------------|------------------------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------|
- | numTrials        | Minimum number of trials the mouse must spend above performance                                                                    | Natural number                                                     |
- | numTrialsPerMin  | Number of trials required per minute to be considered maintaining “good” performance                                               | Natural number                                                     |
- | criteriaNTrials  | Number of trials in the running window used to measure performance for deciding whether to advance to the next maze                | Natural number                                                     |
- | numSessions      | Minimum number of sessions the navigator must have above criteria before advancing                                                 | Natural number                                                     |
- | Performance      | Minimum performance criterion to advance maze                                                                                      | Real number ([0-1])                                                |
- | maxBias          | Max allowed side bias to advance maze                                                                                              | Real number ([0-1])                                                |
- | warmupMaze       | Index of Virmen world in vr.worlds for the warmup maze for that particular main maze, which occurs at the start of a given session | Index of virmen world ([1-N], where N is the max number of worlds) |
- | warmupPerform    | Minimum performance allowed during warmup to advance to mainMaze                                                                   | Real number ([0-1])                                                |
- | warmupBias       | Max allowed side bias allowed during warmup to advance to main maze                                                                | Real number ([0-1])                                                |
- | warmupMotor      | Max percentage of trials to have "bad" motor quality. (Too much travel distance inside the maze)                                   | Real number ([0-1])                                                                                                                           |                                                      
- | easyBlock        | Index of Virmen world in vr.worlds for the easy block maze for that particular main maze                                           | Index of virmen world ([1-N], where N is the max number of worlds) |
- | easyBlockNTrials | Number of trials in an easy block                                                                                                  | Natural number                                                     |
- | numBlockTrials   | Number of trials within a block used to assess performance for demotion to an easy block                                           | Natural number                                                     |
- | blockPerform     | If running window performance (calculated over numBlockTrials) goes under this value, a switch to the easy block is triggered      | Real number ([0-1])                                                |
+ | Parameter name   | Definition | Values accepted |
+ |------------------|------------|-----------------|
+ | numTrials        | Minimum number of trials the subject must spend above the performance criterion | Natural number |
+ | numTrialsPerMin  | Number of trials per minute required to count as maintaining "good" performance | Natural number |
+ | criteriaNTrials  | Number of trials in the running window used to measure performance when deciding whether to advance to the next maze | Natural number |
+ | numSessions      | Minimum number of sessions the subject must spend above criteria before advancing | Natural number |
+ | Performance      | Minimum performance required to advance to the next maze | Real number ([0-1]) |
+ | maxBias          | Maximum side bias allowed to advance to the next maze | Real number ([0-1]) |
+ | warmupMaze       | Index of the ViRMEn world in `vr.worlds` used as the warm-up maze for this main maze, run at the start of each session | Index of a ViRMEn world ([1-N], where N is the number of worlds) |
+ | warmupPerform    | Minimum warm-up performance required to advance to the main maze | Real number ([0-1]) |
+ | warmupBias       | Maximum side bias allowed during warm-up to advance to the main maze | Real number ([0-1]) |
+ | warmupMotor      | Maximum fraction of warm-up trials with "bad" motor quality (too much travel distance inside the maze) | Real number ([0-1]) |
+ | easyBlock        | Index of the ViRMEn world in `vr.worlds` used as the easy-block maze for this main maze | Index of a ViRMEn world ([1-N], where N is the number of worlds) |
+ | easyBlockNTrials | Number of trials in an easy block | Natural number |
+ | numBlockTrials   | Number of trials in the window used to assess performance for demotion to an easy block | Natural number |
+ | blockPerform     | If running-window performance (over `numBlockTrials`) drops below this value, the subject switches to an easy block | Real number ([0-1]) |
 
  3. Protocol extra variables:
 
- | Parameter name        | Definition                                                                                                                                                       | Values accepted                                             |
- |-----------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------|
- | globalSettings        | Defines global settings for all mazes                                                                                                                            | Cell array of name-value pairs (see below for more details) |
- | vr.numMazesInProtocol | Total number of mazes in protocol                                                                                                                                | Natural number (likely the length of mazeIDs)               |
- | vr.stimulusGenerator  | Function to generate stimuli (i.e., distribution of towers along the maze)                                                                                       | @stimulusGeneratorFunc (e.g., @PoissonStimulusTrain)        |
- | vr.stimulusParameters | Parameters for a stimulus inherited when running the experiment (so stimulus parameters that change between mazes but are not defined by the stimuli themselves) | Cell array (see below for more details)                     |
- | vr.inheritedVariables | Parameters for a maze inherited when running the experiment (so maze parameters that change between mazes but are not defined by the stimuli themselves)         | Cell array (see below for more details)                     |
+ | Parameter name        | Definition | Values accepted |
+ |-----------------------|------------|-----------------|
+ | globalSettings        | Global settings shared by all mazes | Cell array of name-value pairs (see below) |
+ | vr.numMazesInProtocol | Total number of mazes in the protocol | Natural number (usually the length of `mazeIDs`) |
+ | vr.stimulusGenerator  | Function that generates the stimuli (i.e., the distribution of towers along the maze) | Function handle (e.g. `@PoissonStimulusTrain`) |
+ | vr.stimulusParameters | Stimulus parameters inherited when the experiment runs (parameters that change between mazes but are not defined by the stimuli themselves) | Cell array |
+ | vr.inheritedVariables | Maze parameters inherited when the experiment runs (parameters that change between mazes but are not defined by the stimuli themselves) | Cell array |
 
  4. Global settings variables:
 
- | Parameter name   | Definition                                                                                                                                                                               | Values accepted     |
- |------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------------------|
- | cueMinSeparation | Min distance between two towers on the same side                                                                                                                                         | Real number (>0)    |
- | fracDuplicated   | Proportion of trials that are duplicated                                                                                                                                                 | Real number ([0-1]) |
- | trialDuplication | Number of times each set of stimulus parameters are duplicated, for a given fracDuplicated (i.e., number of exact replications of each trial type for the duplicated fraction of trials) | Natural number      |
+ | Parameter name   | Definition | Values accepted |
+ |------------------|------------|-----------------|
+ | cueMinSeparation | Minimum distance between two towers on the same side | Real number (>0) |
+ | fracDuplicated   | Proportion of trials that are duplicated | Real number ([0-1]) |
+ | trialDuplication | Number of times each set of stimulus parameters is duplicated for a given `fracDuplicated` (i.e., the number of exact repeats of each trial type within the duplicated fraction of trials) | Natural number |
 
-### Stimuli bank file
+### Stimulus bank file
 
 + Located in the **ViRMEn\experiments\protocols** directory.
-+ Contains the stimulus sets that are drawn from during a session. It holds trial data: tower positions and the number of towers for each maze level, depending on the protocol variables.
++ Contains the stimulus sets drawn from during a session: the tower positions and number of towers for each maze level, generated from the protocol variables.
 + Original file: ```C:\Experiments\ViRMEn\experiments\protocols\stimulus_trains_PoissonBlocksCondensed3m.mat```
 + Most common use:
  1. Create the protocol and world files.
- 2. Run ```generatePoissonStimuli(('world_file'), @('protocol_file'))```, substituting **world_file** and **protocol_file** with the corresponding names.
+ 2. Run the following, replacing **world_file** and **protocol_file** with your file names. Note that the protocol is passed as a function handle (`@`), without quotes or the `.m` extension:
+  ```matlab
+  generatePoissonStimuli('world_file.mat', @protocol_file)
+  ```
 
 ### RigParameters file
 
 + Located in the **ViRMEn\extras** directory.
-+ Defines the parameters that control and adjust the hardware, display, and motion in a task.
-+ Only file: ```C:\Experiments\extras\RigParameters.m```
++ Defines the parameters that control the hardware, display and motion for a task.
++ Only file: ```C:\Experiments\ViRMEn\extras\RigParameters.m```
 
-##### If working on a rig computer:
-+ This file has most likely already been set up by the Lab Manager. Do nothing.
+#### If working on a rig computer:
++ The Lab Manager has most likely already set up this file. Leave it as it is.
 
-##### If working on a personal computer:
-+ The most common use for this file on a personal computer is to run ViRMEn simulations without interacting with the hardware. To do this, set:
-+ ```simulationMode: = true```
-+ ```hasDAQ: = false```
-+ This lets you run simulations on any Windows computer and use the keyboard to simulate mouse movement.
+#### If working on a personal computer:
++ On a personal computer, this file is mostly used to run ViRMEn simulations without any hardware. To do this, set:
+  ```matlab
+  simulationMode = true
+  hasDAQ         = false
+  ```
++ This lets you run simulations on any Windows computer, using the keyboard to simulate the subject's movement.
 
  <figure>
   <img src='./assets/images/virmen_guide/rigparameters_file.png'>
-  <center><figcaption>RigParameters File</figcaption></center>
+  <center><figcaption>RigParameters file</figcaption></center>
  </figure>
 
 
 ### Program wrapper file
 
 + Located in the **ViRMEn\experiments\programs** directory.
-+ Sets up a cohort of animals on the training GUI.
++ Sets up a cohort of animals in the training GUI.
 + Original file: ```C:\Experiments\ViRMEn\experiments\programs\trainPoissonBlocks_lp_cohort1.m```
 + Most common use:
- 1. Copy the existing program wrapper file from the most similar task.
- 2. Rename the file to a descriptive name (e.g. **train"TaskName"_cohort(n).m**).
- 3. In the call to the **runCohortExperiment** function, rename the first 3 parameters:
-   + **dataPath:** should be ```C:\Data\(NETID)\(String to represent protocol, task or cohort)```
-   + **experName:** should be the experiment code name (without .m).
+ 1. Copy the program wrapper file from the most similar existing task.
+ 2. Give the copy a descriptive name (e.g. **train"TaskName"_cohort(n).m**).
+ 3. In the call to the **runCohortExperiment** function, change the first three parameters:
+   + **dataPath:** should be ```C:\Data\(user_id_abv)\(a string that identifies the protocol, task or cohort)```
+   + **experName:** should be the experiment code file name (without `.m`).
    + **cohortName:** should be a string that identifies the cohort.
-  * **experName** and **cohortName** are appended to behavior files.
+   + **experName** and **cohortName** are appended to the behavior file names.
 
  <figure>
   <img src='./assets/images/virmen_guide/program_wrapper_file.png'>
-  <center><figcaption>Program Wrapper File</figcaption></center>
+  <center><figcaption>Program wrapper file</figcaption></center>
  </figure>
 
 
 ### Set up training
 
- 1. Make sure you have all the files described in the section above.
+ 1. Make sure you have all the files described in the sections above.
  2. Run your **program wrapper file** (e.g. ```trainPoissonBlocks_lp_cohort1()```).
  3. The training GUI appears:
 
  <figure>
   <img src='./assets/images/virmen_guide/training_GUI_main.png'>
-  <center><figcaption>Main screen training GUI</figcaption></center>
+  <center><figcaption>Training GUI main screen</figcaption></center>
  </figure>
 
- 4. Click the **Connect to Database** button.
+ 4. Click the **Connect to database** button.
  5. Click the **Add animal** button.
 
  <figure>
@@ -179,143 +211,136 @@ This guide walks the researcher through every step, along with tips and tricks, 
   <center><figcaption>Add animal dialog</figcaption></center>
  </figure>
 
- 6. Fill in the corresponding information for the animal to train (see the next section).
+ 6. Fill in the information for the animal you are training (see [Add animal dialog detailed description](#add-animal-dialog-detailed-description)).
  7. Click the **Submit** button.
- 8. Repeat steps 5-7 to add all animals from the cohort.
+ 8. Repeat steps 5–7 for every animal in the cohort.
  9. Click the **Save regiment** button.
- 10. Click the **"Empty area" section** where the subject you want to train is shown.
+ 10. In the subject panel on the right side of the GUI, click the subject you want to train.
  11. Click the **TRAIN "SubjectFullname"** button.
 
  <figure>
   <img src='./assets/images/virmen_guide/training_GUI_main2.png'>
-  <center><figcaption>Main screen training GUI with subject</figcaption></center>
+  <center><figcaption>Training GUI main screen with a subject added</figcaption></center>
  </figure>
 
 ### Set up motor positioning
-+ If the rig where training happens has a motor positioning system (ask the Lab Manager about it), you need to set up the initial coordinates for each subject trained on that rig.
++ If the training rig has a motor positioning system (ask the Lab Manager), you need to set the initial coordinates for each subject trained on that rig.
 
- 1. Adjust the subject's positioning for the first time on the rig using the motor GUI (installed on the rig computer).
+ 1. Adjust the subject's position on the rig for the first time using the motor GUI (installed on the rig computer).
 
  <figure>
   <img src='./assets/images/virmen_guide/motor_GUI.png'>
   <center><figcaption>Motor GUI</figcaption></center>
  </figure>
 
- 2. In MATLAB, enter the following (replace the code in brackets with the corresponding info for the subject):
+ 2. In MATLAB, enter the following, replacing the values with the subject's full name and the positions shown in the motor GUI:
   ```matlab
-  new_record = struct
-  new_record.subject_fullname = ['efonseca_ef481_actpg004']; # Subject fullname 
-  new_record.ml_position = [17.5]   # ml position in mm (motor axis#1 position in GUI)
-  new_record.ap_position = [10]     # ap position in mm (motor axis#2 position in GUI)
-  new_record.dv_position = [15.3]    # dv position in mm (motor axis#3 position in GUI)
+  new_record = struct;
+  new_record.subject_fullname = 'aluna_T01';  % Subject full name
+  new_record.ml_position = 17.5;              % ML position in mm (motor axis #1 in the GUI)
+  new_record.ap_position = 10;                % AP position in mm (motor axis #2 in the GUI)
+  new_record.dv_position = 15.3;              % DV position in mm (motor axis #3 in the GUI)
   insert(subject.LickometerMotorPosition, new_record)
   ```
 
-### Old Training GUI detailed description
+## Training GUI detailed description
 
- This section describes all the elements of the training GUI.
+ This section describes every element of the training GUI.
 
  <figure>
   <img src='./assets/images/virmen_guide/training_GUI_description.png'>
-  <center><figcaption>Training GUI main screen parts</figcaption></center>
+  <center><figcaption>Parts of the training GUI main screen</figcaption></center>
  </figure>
 
-+ On the main screen, the elements are grouped into three categories (<span style="color:red">*red* = rarely used or not used at all; </span><span style="color:rgb(184, 146, 68);">*yellow* = used in specific situations; </span><span style="color:green">*green* = widely used</span>).
- 1. **Branch information section:** For git users, shows which branch is currently checked out and whether the current code has uncommitted changes. Most of the time it should read "master" and "synced". If not, see the pulling/pushing code section.
- 2. **Schedule calendar:** Day of the week and time when subjects should be trained. This information is not crucial for training at the moment.
- 3. **Ball displacement plot:** Figure showing real-time X and Y velocity for the subject in the rig. Use this plot to detect ball movement sensor issues.
- 4. **RigParameters info bar:** This bar turns red whenever simulation mode is active or the hasDAQ parameter is set to false. If that is the case, both parameters must be reset for training to start. If simulation mode is intended, ignore this bar.
- 5. **Test session checkbox:** Check this box if the next session's goal is to test code, or if the behavior will not be analyzed. The session will not be stored in our DB.
- 6. **Open valve buttons:** Use these buttons to give a small reward to the subject in the rig and/or to test valve function.
- 7. **Connect to DB button:** Use this button to connect to the DB; it should be the first thing you do when the training GUI opens. <a href="https://braincogs.github.io/software/virmen_guide.html#set-up-training">See the Set up training section.</a>
- 8. **Add animal button:** Use this button to add a new subject to the cohort. <a href="https://braincogs.github.io/software/virmen_guide.html#set-up-training">See the Set up training section</a> and the <a href="https://braincogs.github.io/software/virmen_guide.html#add-animal-dialog-detailed-description">Add animal dialog detailed description</a>.
- 9. **Edit animal button:** Button to change a parameter in the "Add animal" dialog for a subject already added to the cohort.
- 10. **Remove animal button:** Button to remove a subject from the cohort (do this when the animal has finished training).
- 11. **Save regiment button:** Click this button whenever a subject is added, edited, or removed to save the changes.
- 12. **Train button:** Click this button to start training the selected subject.
- 13. **Close GUI:** Click to close the GUI.
- 14. **Restart MATLAB shortcut:** Click to restart MATLAB.
++ On the main screen, elements are color-coded into three categories (<span style="color:red">*red* = rarely or never used; </span><span style="color:rgb(184, 146, 68);">*yellow* = used in specific situations; </span><span style="color:green">*green* = widely used</span>).
+ 1. **Branch information section:** For git users, shows which branch is checked out and whether the code has uncommitted changes. Most of the time it should read "master" and "synced".
+ 2. **Schedule calendar:** The days and times when subjects should be trained. This information is not currently needed for training.
+ 3. **Ball displacement plot:** Shows the subject's real-time X and Y velocity on the rig. Use this plot to detect problems with the ball movement sensor.
+ 4. **RigParameters info bar:** Turns red whenever simulation mode is on or `hasDAQ` is set to false. Both parameters must be reset before training can start. If you intend to run a simulation, ignore this bar.
+ 5. **Open valve buttons:** Give the subject on the rig a small reward and/or test that the valve works.
+ 6. **Add animal button:** Adds a new subject to the cohort. See [Set up training](#set-up-training) and [Add animal dialog detailed description](#add-animal-dialog-detailed-description).
+ 7. **Edit animal button:** Changes the "Add animal" settings of a subject already in the cohort.
+ 8. **Remove animal button:** Removes a subject from the cohort (do this when the animal has finished training).
+ 9. **Save regiment button:** Saves your changes. Click it whenever you add, edit or remove a subject.
+ 10. **Train button:** Starts training the selected subject.
+ 11. **Cancel button:** Closes the GUI.
+ 12. **Restart MATLAB button:** Restarts MATLAB.
 
 ### Add animal dialog detailed description
 
  <figure>
   <img src='./assets/images/virmen_guide/add_animal_dialog_description.png'>
-  <center><figcaption>Add subject Dialog</figcaption></center>
+  <center><figcaption>Add animal dialog</figcaption></center>
  </figure>
 
-+ In the Add animal dialog, the elements are grouped into three categories (<span style="color:red">*red* = rarely used or not used at all; </span><span style="color:rgb(184, 146, 68);">*yellow* = used in specific situations; </span><span style="color:green">*green* = widely used</span>). Elements that are not described are not used.
- 1. **Subject selection:** Dropdown list of all subjects in BRAINCoGS available for training.
- 2. **Reward Factor:** Multiplier applied to the reward for each of the warm-up and main mazes. The reward is normally 4 ul for each correct trial on the Towers Task (e.g. if ```RewardFactor = 1.25 -> Reward = 4*1.25 = 5 ul```).
- 3. **Motion blur range:** Parameter that sets up the cue elongation effect opposite to the subject's direction of motion in virtual reality. A 2x1 vector where the first element is the distance (in cm) from the subject to the tower cue at which elongation starts, and the second element is the distance (in cm) at which the elongation effect stops. Leave empty for no motion blur effect. Common values: ```[28 5], []```.
- 4. **Restart or append session:** Action to perform when a session is restarted.
- + If **APPEND SESSION** is selected, each time the session is restarted the "new" session is counted as new blocks of the same session.
- + If **START NEW SESSION** is selected, each time the session is restarted a new session is created (recommended when physiology recordings are performed, to make the syncing process easier).
- 5. **Protocol code file selector:** Dropdown to select the protocol code file; see the <a href="https://braincogs.github.io/software/virmen_guide.html#new-task-creation">New task creation section for detailed information</a>.
- 6. **Experiment code file selector:** Dropdown to select the experiment code file; see the <a href="https://braincogs.github.io/software/virmen_guide.html#new-task-creation">New task creation section for detailed information</a>.
- 7. **Stimulus bank file selector:** Dropdown to select the stimulus bank file; see the <a href="https://braincogs.github.io/software/virmen_guide.html#new-task-creation">New task creation section for detailed information</a>.
- 8. **Stimulus Set edit:** If the stimulus bank has more than one set, you can set it here. Only change this if you understand the stimulus bank file deeply and know what you are doing.
- 9. **How warm up trials are drawn:** Strategy for selecting left or right trials based on previous bias and performance. The default value is eradeTrial, described <a href=" https://pubmed.ncbi.nlm.nih.gov/11550944/">here</a>.
- 10. **How main trials are drawn:** Strategy for selecting left or right trials based on previous bias and performance. The default value is eradeTrial, described <a href=" https://pubmed.ncbi.nlm.nih.gov/11550944/">here</a>.
- 11. **Subtask selector:** If the session is from a specific subtask, you can select it here. See the <a href="https://braincogs.github.io/software/subtask_pipeline.html">subtask pipeline section</a> for more information.
- 12. **Pupillometry video:** If a pupillometry video will be captured, select the video parameters here.
- 13. **Behavior video:** If a behavior video will be captured, select the video parameters here.
- 14. **Manipulation selector:** If the session is from a specific manipulation, you can select it here. See the <a href="https://braincogs.github.io/software/manipulation_pipeline.html">manipulation pipeline section</a> for more information.
- 15. **Stimulation protocol:** If the session is from a specific manipulation, select the stimulation protocol in this dropdown. See the <a href="https://braincogs.github.io/software/manipulation_pipeline.html">manipulation pipeline section</a> for more information.
- 16. **Software parameters:** If the session is from a specific manipulation, select the software parameters in this dropdown. See the <a href="https://braincogs.github.io/software/manipulation_pipeline.html">manipulation pipeline section</a> for more information.
++ In the Add animal dialog, elements are color-coded into the same three categories (<span style="color:red">*red* = rarely or never used; </span><span style="color:rgb(184, 146, 68);">*yellow* = used in specific situations; </span><span style="color:green">*green* = widely used</span>). Elements not described here are not used.
+ 1. **User selection:** Dropdown list of all users registered for training.
+ 2. **Subject selection:** Dropdown list of all Bolkan Lab subjects registered for training. See the [Excel Subject Registry](#excel-subject-registry) for more information.
+ 3. **Reward factor:** Multiplier applied to the reward in the warm-up and main mazes. The standard reward on the Towers Task is 4 µL per correct trial (e.g. ```RewardFactor = 1.25 -> Reward = 4 * 1.25 = 5 µL```).
+ 4. **Motion blur range:** Sets up the cue elongation effect, which stretches cues opposite to the subject's direction of motion in virtual reality. It is a 2×1 vector: the first element is the distance (in cm) from the subject to the tower at which elongation starts, and the second is the distance (in cm) at which it stops. Leave it empty for no motion blur. Common values: ```[28 5]```, ```[]```.
+ 5. **Restart or append session:** What happens when a session is restarted.
+   + **APPEND SESSION:** each restart is recorded as new blocks of the same session.
+   + **START NEW SESSION:** each restart creates a new session (recommended during physiology recordings, as it makes syncing easier).
+ 6. **Protocol code file selector:** Dropdown to select the protocol code file. See [New task creation](#new-task-creation) for details.
+ 7. **Experiment code file selector:** Dropdown to select the experiment code file. See [New task creation](#new-task-creation) for details.
+ 8. **Stimulus bank file selector:** Dropdown to select the stimulus bank file. See [New task creation](#new-task-creation) for details.
+ 9. **Stimulus set edit:** If the stimulus bank contains more than one set, choose it here. Only change this if you understand the stimulus bank file in depth.
+ 10. **How warm-up trials are drawn:** Strategy for choosing left or right trials based on the subject's recent bias and performance. The default is `eradeTrial`, described <a href="https://pubmed.ncbi.nlm.nih.gov/11550944/">here</a>.
+ 11. **How main trials are drawn:** Strategy for choosing left or right trials based on the subject's recent bias and performance. The default is `eradeTrial`, described <a href="https://pubmed.ncbi.nlm.nih.gov/11550944/">here</a>.
 
-### ViRMEn Experiment Stats GUI & Maze Projection
+### ViRMEn Experiment Stats GUI & maze projection
 
-- After you click the Start training subject button, the ViRMEn experiment starts and the ViRMEn Experiment Stats GUI appears. This GUI monitors the subject's current performance throughout the session.
+- When you click the **TRAIN** button, the ViRMEn experiment starts and the ViRMEn Experiment Stats GUI appears. This GUI monitors the subject's performance throughout the session.
 
 
  <figure>
   <img src='./assets/images/virmen_guide/virmen_experiment_stats.png'>
-  <center><figcaption>Virmen Experiment Stats GUI</figcaption></center>
+  <center><figcaption>ViRMEn Experiment Stats GUI</figcaption></center>
  </figure>
 
 
-+ Below is a description of every part of the ViRMEn Experiment Stats GUI.
- 1. **Fraction Correct Plot:** Overall and left/right performance across all blocks of the session.
- 2. **Pass Criteria Plot:** Performance and bias over the last 40 trials. These stats determine whether the subject is promoted to the next level.
- 3. **Speed, Rotation & Angle Plots:** Plots of the displacement variables from the last trial, used to verify that the movement sensor is working correctly and to monitor the subject's side bias.
- 4. **Psychometric Plot:** Percentage of right responses vs. right/left tower trials. For a well-trained subject, this plot should roughly approximate a sigmoid.
- 5. **Message Text Area:** Session milestones are written here, such as: new level achieved, forced reward delivery, level demotion, etc.
++ Each part of the ViRMEn Experiment Stats GUI is described below.
+ 1. **Fraction correct plot:** Overall, left and right performance across all blocks of the session.
+ 2. **Pass criteria plot:** Performance and bias over the last 40 trials. These values determine whether the subject is promoted to the next level.
+ 3. **Speed, rotation & angle plots:** Movement variables from the last trial, used to check that the movement sensor works and to monitor the subject's side bias.
+ 4. **Psychometric plot:** Percentage of right choices as a function of the difference between right and left towers. For a well-trained subject, this curve should look roughly sigmoidal.
+ 5. **Message text area:** Logs session milestones, such as a new level reached, a forced reward delivery or a level demotion.
 
-- In addition to the Experiment Stats GUI, the virtual reality world is displayed on the rig projector. It may look something like the image below:
+- Alongside the Experiment Stats GUI, the virtual world is shown on the rig projector. It looks something like this:
 
  <figure>
   <img src='./assets/images/virmen_guide/virmen_maze.png'>
-  <center><figcaption>ViRMEn Maze Projection</figcaption></center>
+  <center><figcaption>ViRMEn maze projection</figcaption></center>
  </figure>
 
 ## Tips and Tricks Experiment Code
 
-### Add variables to behavior file
+### Add variables to the behavior file
 
-+ It is often necessary to store additional variables in the behavior file for further analysis.
++ You will often need to store extra variables in the behavior file for later analysis.
 
-#### Add variables on the trial level
+#### Add trial-level variables
  1. Go to the ```setupTrials``` function in the experiment code.
- 2. Find a line like this: ```cfg.trialData         = { 'trialProb', 'trialType', 'choice', 'trialID' ... ```
- 3. Add the variable name at the end of the **cfg.trialData** cell array.
-+ Remember to define that variable as vr.(variableName) in ```initializationCodeFun()``` or ```runtimeCodeFun()``` before the 1st trial is over.
+ 2. Find a line like this one: ```cfg.trialData         = { 'trialProb', 'trialType', 'choice', 'trialID' ... ```
+ 3. Add your variable name at the end of the **cfg.trialData** cell array.
++ Make sure the variable is defined as `vr.(variableName)` in ```initializationCodeFun()``` or ```runtimeCodeFun()``` before the first trial ends.
 
-#### Add variables on the block level
+#### Add block-level variables
  1. Go to the ```setupTrials``` function in the experiment code.
- 2. Find a line like this: ```cfg.blockData         = { 'mazeID', 'mainMazeID', 'motionBlurRange', 'iterStr', 'shapingProtocol' ... ```
- 3. Add the variable name at the end of the **cfg.blockData** cell array.
-+ Remember to define that variable as vr.(variableName) in ```initializationCodeFun()``` or ```runtimeCodeFun()``` before the 1st trial is over.
+ 2. Find a line like this one: ```cfg.blockData         = { 'mazeID', 'mainMazeID', 'motionBlurRange', 'iterStr', 'shapingProtocol' ... ```
+ 3. Add your variable name at the end of the **cfg.blockData** cell array.
++ Make sure the variable is defined as `vr.(variableName)` in ```initializationCodeFun()``` or ```runtimeCodeFun()``` before the first trial ends.
 
-### Set code ready for simulation
+### Make the code simulation-ready
 
-+ It is useful to have the experiment code ready for simulations, so you can test all changes without interacting with the rig hardware.
-+ Setting the code up for simulation also enables making trial-by-trial videos with the <a href="https://github.com/BrainCOGS/ReproduceTrialTowers">ReproduceTrialTowers repository</a>.
- 1. Find all lines in the experiment code that interact with hardware (every line starting with **nidaq..** and the **updateDAQSyncSignals** function — the hardware code lines).
- 2. Add the line ```if RigParameters.hasDAQ``` before the hardware code lines and close the if after them.
++ It is useful to make the experiment code simulation-ready, so you can test every change without touching the rig hardware.
++ Simulation-ready code can also be used to make trial-by-trial videos with the <a href="https://github.com/BrainCOGS/ReproduceTrialTowers">ReproduceTrialTowers repository</a>.
+ 1. Find every line in the experiment code that talks to the hardware: all lines starting with **nidaq** and the **updateDAQSyncSignals** function.
+ 2. Wrap those lines in an ```if RigParameters.hasDAQ ... end``` block.
 
-### Solve common errors during training
+## Solving common errors during training
 
-#### Arduino Serial communication error
+### Arduino serial communication error
 
 + Errors like these:
  ```matlab
@@ -328,9 +353,9 @@ This guide walks the researcher through every step, along with tips and tricks, 
  ```matlab
  Device Error: Unanticipated host error
  ```
-+ These are the most common errors during training. Check whether the Arduino COM port is found in Device Manager, and restart MATLAB and/or the system to solve this.
++ These are the most common errors during training. Check that the Arduino's COM port appears in Device Manager, then restart MATLAB and/or the computer.
 
-#### virmen variable not properly set
+### ViRMEn variable not set
 
  ```matlab
  Reference to non-existent field (variable_name)...
@@ -338,9 +363,9 @@ This guide walks the researcher through every step, along with tips and tricks, 
  ```matlab
  Unrecognized field name (variable_name).
  ```
-+ This error is solved by initializing the variable in ```initializationCodeFun()``` (e.g. ```vr.(variable_name) = 0```).
++ Fix this error by initializing the variable in ```initializationCodeFun()``` (e.g. ```vr.(variable_name) = 0```).
 
-#### Nidaq channel is busy or not found
+### NI-DAQ channel is busy or not found
 
 ```matlab
  [nidaqPulseRightReward:commit]  Requested operation could not be performed, because the specified digital lines are either reserved or the device is not present in NI-DAQmx.
@@ -351,4 +376,4 @@ This guide walks the researcher through every step, along with tips and tricks, 
 
  Status Code: -200587
 ```
-+ Review the **RigParameters.m** file and check that there is no overlap between the input/output channel variables (rewardChannel, laserChannel, rightPuffChannel, leftPuffChannel, rightRewardChannel, leftRewardChannel, newIterationChannel, newTrialChannel, etc.).
++ Check **RigParameters.m** and make sure no two input/output channel variables share a channel (`rewardChannel`, `laserChannel`, `rightPuffChannel`, `leftPuffChannel`, `rightRewardChannel`, `leftRewardChannel`, `newIterationChannel`, `newTrialChannel`, etc.).
