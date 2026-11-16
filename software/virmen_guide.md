@@ -11,7 +11,7 @@ This guide walks you through every step of training subjects in the ViRMEn/DataJ
 ## Excel Subject Registry
 
 + Before you can use ViRMEn, you need to register the subjects you are going to train.
-+ Register them in the <a href="https://iowa-my.sharepoint.com/:x:/r/personal/jmunozdelangel_uiowa_edu/_layouts/15/Doc.aspx?sourcedoc=%7B3C3EFF12-0DD5-4FA0-B2CB-1104808CD318%7D&file=ViRMEn_Infrastructure_Data.xlsm&action=default&mobileredirect=true">Excel Subject Registry</a>.
++ Register them in the <a href="https://iowa-my.sharepoint.com/:x:/r/personal/jmunozdelangel_uiowa_edu/_layouts/15/Doc.aspx?sourcedoc=%7B3C3EFF12-0DD5-4FA0-B2CB-1104808CD318%7D&file=ViRMEn_Infrastructure_Data.xlsm&action=default&mobileredirect=true">Excel Subject Registry</a> **(Open the file in Desktop Excel for the macros to work)**.
 
  <figure>
   <img src='./assets/images/virmen_guide/UserRegistry.png'>
