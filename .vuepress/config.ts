@@ -186,6 +186,7 @@ function getSoftwareSidebar() {
       collapsible: true,
       children: [
         '/software/virmen_guide.md',              // Maps to `software/virmen_guide.md`
+        '/software/virmen_contributing.md',       // Maps to `software/virmen_contributing.md`
       ],
     },
   ];

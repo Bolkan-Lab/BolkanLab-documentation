@@ -39,7 +39,7 @@ This guide walks you through every step of training subjects in the ViRMEn/DataJ
 ### Prerequisites
 
 + Read the ViRMEn Manual, available in the ViRMEn repository (log in to GitHub first): <a href="https://github.com/Bolkan-Lab/ViRMEn/blob/main/ViRMEn%20manual.pdf">ViRMEn Manual</a>.
-+ Each task is made up of six files (two `.mat` files and four `.m` functions) that work together. Each one is described below.
++ Each task is made up of five files (two `.mat` files and three `.m` functions) that work together. Each one is described below.
 
 ### Experiment code file
 + Located in the **ViRMEn\experiments** directory.
@@ -172,30 +172,10 @@ This guide walks you through every step of training subjects in the ViRMEn/DataJ
  </figure>
 
 
-### Program wrapper file
-
-+ Located in the **ViRMEn\experiments\programs** directory.
-+ Sets up a cohort of animals in the training GUI.
-+ Original file: ```C:\Experiments\ViRMEn\experiments\programs\trainPoissonBlocks_lp_cohort1.m```
-+ Most common use:
- 1. Copy the program wrapper file from the most similar existing task.
- 2. Give the copy a descriptive name (e.g. **train"TaskName"_cohort(n).m**).
- 3. In the call to the **runCohortExperiment** function, change the first three parameters:
-   + **dataPath:** should be ```C:\Data\(user_id_abv)\(a string that identifies the protocol, task or cohort)```
-   + **experName:** should be the experiment code file name (without `.m`).
-   + **cohortName:** should be a string that identifies the cohort.
-   + **experName** and **cohortName** are appended to the behavior file names.
-
- <figure>
-  <img src='./assets/images/virmen_guide/program_wrapper_file.png'>
-  <center><figcaption>Program wrapper file</figcaption></center>
- </figure>
-
-
 ### Set up training
 
  1. Make sure you have all the files described in the sections above.
- 2. Run your **program wrapper file** (e.g. ```trainPoissonBlocks_lp_cohort1()```).
+ 2. Pass all tests in the [Rig Tester GUI](#rig-tester).
  3. The training GUI appears:
 
  <figure>
@@ -203,45 +183,60 @@ This guide walks you through every step of training subjects in the ViRMEn/DataJ
   <center><figcaption>Training GUI main screen</figcaption></center>
  </figure>
 
- 4. Click the **Connect to database** button.
- 5. Click the **Add animal** button.
+ 4. Click the **Add animal** button.
 
  <figure>
   <img src='./assets/images/virmen_guide/add_animal_section.png'>
   <center><figcaption>Add animal dialog</figcaption></center>
  </figure>
 
- 6. Fill in the information for the animal you are training (see [Add animal dialog detailed description](#add-animal-dialog-detailed-description)).
- 7. Click the **Submit** button.
- 8. Repeat steps 5–7 for every animal in the cohort.
- 9. Click the **Save regiment** button.
- 10. In the subject panel on the right side of the GUI, click the subject you want to train.
- 11. Click the **TRAIN "SubjectFullname"** button.
+ 5. Fill in the information for the animal you are training (see [Add animal dialog detailed description](#add-animal-dialog-detailed-description)).
+ 6. Click the **Submit** button.
+ 7. Repeat steps 4–6 for every animal in the cohort.
+ 8. Click the **Save regiment** button.
+ 9. In the subject panel on the right side of the GUI, click the subject you want to train.
+ 10. Click the **TRAIN "SubjectFullname"** button.
 
  <figure>
   <img src='./assets/images/virmen_guide/training_GUI_main2.png'>
   <center><figcaption>Training GUI main screen with a subject added</figcaption></center>
  </figure>
 
-### Set up motor positioning
-+ If the training rig has a motor positioning system (ask the Lab Manager), you need to set the initial coordinates for each subject trained on that rig.
+## Rig Tester
 
- 1. Adjust the subject's position on the rig for the first time using the motor GUI (installed on the rig computer).
+- The Rig Tester GUI lets you check all of a rig's inputs and outputs (IOs) before training starts.
+- At startup, MATLAB should already be open and the Rig Tester GUI should be visible.
 
  <figure>
-  <img src='./assets/images/virmen_guide/motor_GUI.png'>
-  <center><figcaption>Motor GUI</figcaption></center>
+  <img src='./assets/images/virmen_guide/rig_tester.png'>
+  <center><figcaption>Rig Tester GUI</figcaption></center>
  </figure>
 
- 2. In MATLAB, enter the following, replacing the values with the subject's full name and the positions shown in the motor GUI:
-  ```matlab
-  new_record = struct;
-  new_record.subject_fullname = 'aluna_T01';  % Subject full name
-  new_record.ml_position = 17.5;              % ML position in mm (motor axis #1 in the GUI)
-  new_record.ap_position = 10;                % AP position in mm (motor axis #2 in the GUI)
-  new_record.dv_position = 15.3;              % DV position in mm (motor axis #3 in the GUI)
-  insert(subject.LickometerMotorPosition, new_record)
-  ```
+
++ Below is a description of every part of the Rig Tester GUI. Note that some buttons may not be shown (and some extra buttons may appear) compared to the example image.
+ 1. **Start all tests button:** Automatically runs all "Automatic Tests", one by one, until they are done.
+ 2. **Start individual test button:** For "Output Tests" such as valves and air puffs. This button briefly activates the output so you can manually verify it is working properly.
+ 3. **Mark Passed/Failed buttons:** For "Input & Output Tests", the technician pushes this button to mark a test as passed or failed.
+ 4. **Report checkboxes:** If a test fails, the technician can report it by checking the report checkbox.
+ 5. **Calibration Panel:**
+    - **Left Valve/Right Valve/Valve button:** Runs calibration: 25 drops are delivered from the corresponding lick spout. The technician can check whether the volume delivered matches the desired value (4 µL per drop).
+    - **Up and Down Arrow buttons:** Adjust valve timing to reach the desired calibration.
+    - **Set calibration time button:** Saves the adjusted valve times in the RigParameters file.
+    - **Both valves button:** Calibrates both valves simultaneously.
+ 6. **Ready button:** If all tests pass, proceed to the Training Flow GUI screen.
+ 7. **Report & Comment button:** If at least one IO test does not pass and the report checkboxes are marked, a report screen appears where you can add comments for the Lab Manager (see below). A Slack message is sent to the **#rig_issues_and_troubleshooting** channel when a report is sent.
+
+ <figure>
+  <img src='./assets/images/virmen_guide/rig_tester_report.png'>
+  <center><figcaption>Rig Tester Report Dialog</figcaption></center>
+ </figure>
+
+- If a rig parameter is missing from the RigParameters.m file for the configured IOs, a dialog like the one below appears. Add the parameters to the RigParameters.m file.
+
+ <figure>
+  <img src='./assets/images/virmen_guide/missing_rig_parameters.png'>
+  <center><figcaption>Missing Rig Parameters Dialog</figcaption></center>
+ </figure>
 
 ## Training GUI detailed description
 
